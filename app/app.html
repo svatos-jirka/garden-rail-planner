@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zahradní železnice – návrh trati na terénu</title>
+<style>
+@@CSS@@
+</style>
+</head>
+<body>
+<div id="err"></div>
+<div id="start">
+  <div class="stBox">
+    <div class="stHead"><h2>Zahradní železnice – návrh trati na terénu</h2>
+      <div class="small">Terén DMR 5G, ortofoto, parcely a budovy z otevřených dat ČÚZK. Projekty se ukládají v tomto prohlížeči.</div></div>
+    <div id="stMain">
+      <div class="stBtns">
+        <button id="stNew" class="pri">+ Nový projekt (podle adresy)</button>
+        <button id="stImp">Importovat projekt ze souboru…</button>
+        <input type="file" id="stFile" accept=".json,application/json" class="hidden">
+      </div>
+      <h3>Uložené projekty</h3>
+      <div id="stList"><span class="small">Načítám…</span></div>
+      <div id="stMsg" class="small"></div>
+    </div>
+    <div id="stWiz" class="hidden">
+      <div class="wzStep" id="wz1">
+        <h3>1. Adresa – obec a číslo popisné</h3>
+        <div class="wzRow"><input id="wzAddr" placeholder="např. Lhota 12" autocomplete="off"><button id="wzFind" class="pri">Hledat</button><button id="wzBack">Zpět</button></div>
+        <div class="small">Stačí obec (nebo část obce, ulice) a číslo popisné. Diakritika nevadí.</div>
+        <div id="wzRes"></div>
+      </div>
+      <div class="wzStep hidden" id="wz2">
+        <h3>2. Pozemek – klikněte na parcely, které patří k zahradě</h3>
+        <div class="small" id="wzAddrSel"></div>
+        <div class="wzMapWrap"><canvas id="wzMap"></canvas><div id="wzTip" class="hidden"></div></div>
+        <div class="wzRow"><span id="wzSel" class="grow"></span><button id="wzWider" title="Načíst parcely ve větším okolí">Větší okolí</button></div>
+        <div class="wzRow"><label>Název projektu <input id="wzName" class="grow"></label></div>
+        <div class="wzRow"><button id="wzBuild" class="pri">Stáhnout data a vytvořit projekt</button><button id="wzBack2">Zpět</button></div>
+      </div>
+      <div class="wzStep hidden" id="wz3">
+        <h3>3. Stahování a výpočet</h3>
+        <div id="wzLog"></div>
+        <div class="wzRow"><button id="wzBack3" class="hidden">Zpět</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="app">
+<aside id="side">
+  <div class="prjBar"><h1 id="prjName">Projekt</h1><button id="bProjects" title="Zpět na seznam projektů (návrh je uložen)">Projekty</button></div>
+  <div class="sub" id="prjSub"></div>
+
+  <details open><summary>Rozchod a limity trati</summary>
+    <div class="row"><label for="gauge">Rozchod</label>
+      <select id="gauge" class="span2">
+        <option value="3.5">3½" (89 mm)</option>
+        <option value="5">5" (127 mm)</option>
+        <option value="7.25">7¼" (184 mm)</option>
+        <option value="7.5">7½" (190,5 mm)</option>
+      </select></div>
+    <div class="row"><label for="strictR" title="Flexi kolej, výhybky ani ruční úprava nepoloží oblouk s poloměrem pod minimem">Nepovolit menší než min. poloměr</label>
+      <input type="checkbox" id="strictR" style="justify-self:start;width:auto"></div>
+    <div id="grp-lim"></div>
+    <div class="small">Výchozí hodnoty jsou orientační (viz Nápověda) – upravte je podle svých vozidel.</div>
+  </details>
+
+  <details><summary>Stavba – pláň a svahy</summary><div id="grp-stav"></div></details>
+
+  <details open><summary>Výškové řešení (niveleta)</summary>
+    <div class="row"><label for="gDesignMode">Návrhový limit stoupání</label>
+      <select id="gDesignMode" class="span2"><option value="rec">doporučený</option><option value="max">maximální</option></select></div>
+    <div id="grp-vys"></div>
+    <div class="small">Výška temene kolejnice (TK) se počítá automaticky co nejblíž terénu v rámci limitů.
+      Výšku koncového bodu prvku lze zafixovat v panelu „Vybraný prvek“.</div>
+  </details>
+
+  <details open><summary>Výškové body – pevná výška TK (<span id="npins">0</span>)</summary>
+    <div id="pins"></div>
+    <div class="btns" style="margin-top:4px">
+      <button id="pinsClean" title="Smaže body, které v místě neplatí (zadané víckrát), a body u smazaných prvků">Smazat duplicitní a neplatné</button>
+      <button id="pinsClear">Smazat všechny</button>
+    </div>
+    <div class="small">Výškový bod drží výšku TK v jednom místě. Vzniká dvojklikem v profilu, pravým klikem na kolej („Výškový bod zde“)
+      nebo v panelu Vybraný prvek. Vstupní bod má výchozí „pláň na terénu“. ⌖ = ukázat, ✕ = smazat.</div>
+  </details>
+
+  <details><summary>Výhybky (pro nově vkládané)</summary><div id="grp-vyh"></div></details>
+
+  <details open><summary>Kontrolní body – zpřesnění terénu</summary>
+    <div class="row"><label for="svUse" title="Terén = DMR 5G opravený podle změřených bodů">Zpřesnit terén podle měření</label>
+      <input type="checkbox" id="svUse" style="justify-self:start;width:auto"></div>
+    <div id="svSum"></div>
+    <div class="btns" style="margin:4px 0">
+      <button id="svOpen">Tabulka bodů</button><button id="svImp">Import CSV</button><button id="svExp">Export CSV</button><button id="svClr">Smazat body</button>
+    </div>
+    <input type="file" id="svFile" accept=".csv,.txt,text/csv" class="hidden">
+    <div id="grp-mer"></div>
+    <div class="small">Odečet laseru = čtení na lati v metrech (větší číslo = níž). Výšku přístroje znát nemusíte –
+      dopočítá se z bodů (medián k DMR), nebo ji určí bod se „známou výškou“. Podrobně v Nápovědě.</div>
+  </details>
+
+  <details open><summary>Vybraný prvek</summary><div id="props"></div></details>
+  <details open><summary>Souhrn</summary><div id="summary"></div></details>
+  <details open><summary>Zemní práce – bilance</summary>
+    <div id="earth"></div>
+    <div id="grp-zem"></div>
+    <div class="btns" style="margin-top:4px">
+      <button id="bBalance" title="Posune celou niveletu nahoru/dolů tak, aby výkop (× součinitel) pokryl násypy. Limity sklonu i pevné výšky TK zůstanou.">Vyrovnat bilanci</button>
+      <button id="bBalanceClr" title="Vrátit posun nivelety na 0">Zrušit posun</button>
+    </div>
+  </details>
+  <details open><summary>Předpoklad ceny</summary>
+    <div class="row"><label for="costMode">Kolej</label>
+      <select id="costMode" class="span2"><option value="parts">z dílů (kolejnice + pražce)</option><option value="ready">hotová (pole s pražci)</option></select></div>
+    <div id="costPar"></div>
+    <div id="cost"></div>
+    <div class="small">Výchozí ceny jsou jen hrubý odhad pro ukázku – přepište je podle nabídek dodavatelů (Kč vč. DPH).
+      Ceny se pamatují zvlášť pro každý rozchod.</div>
+  </details>
+  <details open><summary>Kontrola návrhu (<span id="nwarn">0</span>)</summary><div id="warnings"></div></details>
+
+  <details><summary>Soubory a export</summary>
+    <div class="btns">
+      <button id="bSave">Uložit návrh (JSON)</button>
+      <button id="bLoad">Načíst návrh</button><input type="file" id="fLoad" accept=".json,application/json" class="hidden">
+      <button id="bPrjExport" title="Celý projekt do jednoho souboru: terén, ortofoto, hranice, návrh trati i kontrolní body – pro přenos na jiný počítač">Uložit celý projekt (soubor)</button>
+      <button id="bCsvRoute">Vytyčovací tabulka trasy (CSV)</button>
+      <button id="bCsvEl">Souhrn prvků (CSV)</button>
+      <button id="bCsvCost">Rozpočet (CSV)</button>
+      <button id="bDemo">Ukázkový návrh</button>
+      <button id="bClear">Smazat celý návrh</button>
+    </div>
+    <div class="small">Návrh se průběžně ukládá i do prohlížeče (localStorage).</div>
+  </details>
+
+  <details><summary>Nápověda a zdroje limitů</summary><div id="help">@@HELP@@</div></details>
+</aside>
+
+<section id="main">
+  <div id="toolbar">
+    <button class="tab on" data-tab="plan">Plán</button><button class="tab" data-tab="3d">3D</button>
+    <span class="sep"></span>
+    <span id="tb-plan" class="grp">
+      <button class="tool on" data-tool="select" title="Výběr prvku, posun mapy tažením (V)">Výběr</button>
+      <button class="tool" data-tool="start" title="Vstupní bod: 1. klik poloha, 2. klik směr (S)">Vstupní bod</button>
+      <button class="tool" data-tool="flex" title="Flexi kolej od volného konce (F)">Flexi kolej</button>
+      <button class="tool" data-tool="circle" title="Celý kruh flexi koleje o poloměru R flexi – pak posunout, rozdělit, části smazat (K)">Kruh</button>
+      <button class="tool" data-tool="toL" title="Výhybka levá (L)">Výhybka L</button>
+      <button class="tool" data-tool="toR" title="Výhybka pravá (P)">Výhybka P</button>
+      <button class="tool" data-tool="toY" title="Výhybka Y – symetrická, na volný konec (Y)">Výhybka Y</button>
+      <button class="tool" data-tool="split" title="Rozdělit kolej v bodě (D)">Rozdělit</button>
+      <button class="tool" data-tool="del" title="Smazat prvek (X)">Smazat</button>
+      <button class="tool" data-tool="svpt" title="Kontrolní bod pro odečet z laseru: klik = nový bod, táhnout = přesun (M)">Kontrolní bod</button>
+      <span class="sep"></span>
+      <button id="bUndo" title="Zpět (Ctrl+Z)">↶</button><button id="bRedo" title="Znovu (Ctrl+Y)">↷</button>
+      <span class="sep"></span>
+      <label title="Poloměr, kterým se flexi kolej ohýbá">R flexi <input type="number" id="rFlex" step="0.5" min="1"> m</label>
+      <label title="Poloměr vkládaného kruhu. Výchozí = doporučený min. poloměr (mění se s ním, dokud ho nepřepíšete)">R kruhu <input type="number" id="rCircle" step="0.5" min="1"> m</label>
+      <button id="rCircleReset" title="R kruhu = doporučený min. poloměr">↺</button>
+      <label title="Krok výpočtu a zaokrouhlení délek">krok <input type="number" id="step" step="0.05" min="0.05"> m</label>
+      <label title="Výhybka vkládaná do přímé koleje bude orientovaná proti směru koleje (O)"><input type="checkbox" id="toRev"> výhybka proti směru</label>
+      <span class="sep"></span>
+      <label>Podklad <select id="bg"><option value="ortho">ortofoto</option><option value="relief">relief</option><option value="none">nic</option></select></label>
+      <label><input type="checkbox" id="lyCont" checked> vrstevnice</label>
+      <label><input type="checkbox" id="lyEarth" checked> násypy/zářezy</label>
+      <label><input type="checkbox" id="lyLab" checked> popisky</label>
+      <label><input type="checkbox" id="lySv" checked> kontrolní body</label>
+    </span>
+    <span id="tb-3d" class="grp hidden">
+      <label>Převýšení <select id="ex3"><option>1</option><option selected>2</option><option>3</option><option>5</option></select>×</label>
+      <label>Terén <select id="tex3"><option value="o" selected>ortofoto</option><option value="h">výšky (barevně)</option></select></label>
+      <label title="Terén s vymodelovanými násypy (oranžově) a zářezy (modře) podle návrhu"><input type="checkbox" id="built3" checked> terén po stavbě</label>
+      <label>Neprůhlednost terénu <input type="range" id="op3" min="0.1" max="1" step="0.05" value="1"></label>
+    </span>
+  </div>
+  <div id="views">
+    <canvas id="plan"></canvas>
+    <div id="view3d" class="hidden"></div>
+    <div id="hint"></div>
+    <div id="ctxMenu" class="hidden"></div>
+    <div id="svPanel" class="hidden">
+      <div class="svHead"><b>Kontrolní body – odečty z laseru</b><span class="sp"></span><button id="svClose" title="Zavřít tabulku">✕</button></div>
+      <div class="svBar">
+        nové body: <select id="svDefT"><option value="lat">laser – odečet na lati [m]</option><option value="abs">výška terénu [m n.m.]</option><option value="rel">relativní výška [m] (+ nahoru)</option></select>
+        stanovisko <input id="svDefSt" class="w2">
+        <span class="sep"></span> podél trasy po <input id="svStep" class="w2" value="2"> m <button id="svAlong" title="Rozmístí body podél trasy podélného profilu (vybraná kolej)">Přidat body</button>
+        <span class="sep"></span><button id="svImp2">Import</button><button id="svExp2">Export CSV</button>
+      </div>
+      <div class="svTbl"><table>
+        <thead><tr><th>#</th><th>název</th><th>x [m]</th><th>y [m]</th><th>typ</th><th>odečet / výška</th><th>stan.</th><th title="Známá výška terénu v bodě (m n.m.) – naváže stanovisko">známá výška</th>
+          <th title="Výška terénu z měření">terén [m n.m.]</th><th>DMR</th><th title="měření − DMR">rozdíl</th><th></th></tr></thead>
+        <tbody id="svBody"></tbody></table></div>
+      <div class="small svFoot">Enter = stejný sloupec na dalším řádku · klik na # = ukázat v plánu · body bez odečtu se nepočítají (plán měření) ·
+        oranžově měření výš než DMR, modře níž</div>
+    </div>
+    <div id="status"></div>
+    <div id="legend">
+      <div><i style="background:#e03131"></i><span id="lgArea">hranice pozemku</span></div>
+      <div><i style="background:#f2c200"></i><span id="lgBld">budovy</span></div>
+      <div><i style="background:rgba(232,131,58,.8)"></i>násyp</div>
+      <div><i style="background:rgba(58,123,232,.8)"></i>zářez</div>
+      <div><i style="background:#2f9e44;border-radius:50%"></i>volný konec</div>
+      <div><i style="background:#e8590c;border-radius:50%"></i>/<i style="background:#1971c2;border-radius:50%"></i>kontrolní bod výš / níž než DMR</div>
+      <div><i style="background:rgba(224,49,49,.55)"></i>/<i style="background:rgba(245,159,0,.55)"></i>mimo limit / pod doporučením</div>
+    </div>
+  </div>
+  <div id="profWrap"><canvas id="profile"></canvas>
+    <div id="profEdit" class="hidden"><span id="profEditLab">TK</span>
+      <input type="number" step="0.01" id="profEditVal"> <span class="small">Enter</span>
+      <button id="profEditDel" title="Zrušit výškový bod (výška se zase počítá automaticky)">zrušit bod</button></div>
+    <div id="profCtl"><span class="small">dvojklik = výškový bod · táhnout = výška · pravý klik = zrušit</span> &nbsp; Výšky v profilu:
+      <select id="profMode">
+        <option value="abs">absolutně (m n.m.)</option>
+        <option value="relTK">relativně k TK vstupního bodu</option>
+        <option value="relT">relativně k terénu ve vstupním bodě</option>
+      </select>
+    </div>
+  </div>
+</section>
+</div>
+<script type="application/json" id="data">@@DATA@@</script>
+<script>/*@@PLOTLY@@*/</script>
+<script>
+@@START@@
+</script>
+<script type="text/plain" id="appjs">
+@@JS@@
+</script>
+</body>
+</html>

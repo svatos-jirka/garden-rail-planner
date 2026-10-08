@@ -1,0 +1,14 @@
+{
+ "_comment": "Vzor. Zkopírujte do private/site.json (složka private/ je v .gitignore) a vyplňte svůj pozemek.",
+ "id": "my-garden",
+ "name": "Moje zahrada",
+ "parcel": "123/4",
+ "building": "st. 56",
+ "ku": "Lhota",
+ "ku_code": "000000",
+ "address": "č.p. 12, 123 45 Lhota",
+ "search": "lhota 12",
+ "bbox_wgs84": [50.00000, 15.00000, 50.00010, 15.00020],
+ "tile": "XXXX00",
+ "laz": "data/XXXX00.laz"
+}

@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# soukromá data konkrétního pozemku (konfigurace, LAZ, výstupy s polohou) – nikdy necommitovat
+private/
+
+# dočasné a pomocné soubory
+check_*.png
+preview_*.html
+*.zip
+*.laz
+*.las
+node_modules/
+.idea/

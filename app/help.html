@@ -1,0 +1,167 @@
+<p><b>Projekty</b></p>
+<ul>
+<li>Po otevření souboru se ukáže <b>úvodní okno</b> se seznamem projektů. Tlačítko <b>Projekty</b> (vlevo nahoře) se do něj vrátí. Návrh je vždy uložený.
+ F5 nechá otevřený aktuální projekt.</li>
+<li><b>Nový projekt</b>: napište obec a číslo popisné (např. „Lhota 12“, diakritika nevadí) a vyberte adresu.
+ Na mapě s ortofotem pak klikněte na parcely, které patří k zahradě. Předvybraná je parcela s domem a zahrada, která ji obklopuje.
+ Tlačítko „Stáhnout data a vytvořit projekt“ stáhne z ČÚZK:
+ <ul>
+ <li>body DMR 5G (INSPIRE TIN – tytéž body jako soubory LAZ) a spočítá z nich terén po 0,25 m;</li>
+ <li>ortofoto;</li>
+ <li>budovy (stavební objekty RÚIAN).</li>
+ </ul>
+ Vrstevnice a stínovaný reliéf se spočítají v prohlížeči. Potřeba je jen internet, nic se neinstaluje.</li>
+<li>Projekty (terén, ortofoto) se ukládají v tomto prohlížeči (IndexedDB), návrh trati a kontrolní body zvlášť pro každý projekt.
+ Na jiný počítač nebo do jiného prohlížeče se projekt přenese tlačítkem <b>Uložit do souboru</b> (v seznamu, nebo v aplikaci „Soubory a export → Uložit celý projekt“)
+ a na druhém místě <b>Importovat projekt ze souboru</b>. Soubor obsahuje terén, ortofoto, hranice, návrh i kontrolní body (~1–2 MB).
+ Vymazáním dat prohlížeče se projekty smažou – důležité projekty si ukládejte do souboru.</li>
+<li><b>Načíst návrh</b> umí vzít návrh i z jiného projektu na stejném místě (posune ho o rozdíl počátků souřadnic).</li>
+</ul>
+<p><b>Ovládání</b></p>
+<ul>
+<li><b>Kolečko</b> = zoom, <b>pravé tlačítko</b> (v režimu Výběr i levé) tažením = posun mapy.</li>
+<li><b>Vstupní bod (S)</b>: 1. klik = poloha (zaokrouhlí se na krok 0,25 m), 2. klik = směr koleje (Shift = po 15°). Potom se rovnou pokračuje flexi kolejí.</li>
+<li><b>Flexi kolej (F)</b>: klik na volný konec (zelený bod) a táhněte. Kolej se ohne poloměrem „R flexi“ a pokračuje přímo ke kurzoru.
+ <b>Shift</b> = jeden oblouk přesně přes kurzor (poloměr se mění), <b>Ctrl</b> = jen přímá. Klik = položit, Esc / pravý klik = konec.
+ Najetím na jiný volný konec se nabídne napojení dvěma oblouky (uzavření okruhu).
+ <ul>
+ <li><b>Odbočka z koleje:</b> klik doprostřed existující přímé koleje a tažení na stranu. Výhybka (strana i směr podle kurzoru) se vloží do koleje a z její odbočky vede nová kolej.</li>
+ <li><b>Asistent:</b> když se kurzorem dotknete jiné koleje, nabídne <b>napojení výhybkou</b> (sám najde místo, stranu a plynulé oblouky v limitu poloměru).
+  Funguje do přímé koleje i do <b>oblouku nebo kruhu</b>. Do oblouku vloží obloukovou výhybku a u textu ukáže výsledný poloměr odbočky.
+  Když nová kolej jinou kolej překříží, nabídne <b>křížení X</b>: obě koleje se v průsečíku rozdělí a mají tam stejnou výšku. Kontroluje se min. úhel křížení.
+  <b>Tab</b> přepíná mezi nabídnutými možnostmi (napojení / křížení / jen kolej), klik potvrdí.</li>
+ </ul></li>
+<li><b>Kruh (K)</b>: klik vloží celý kruh flexi koleje o poloměru „R kruhu“. Výchozí je doporučený min. poloměr, ↺ ho vrátí.
+ Kruh je jeden kus: táhnutím ho posunete, R otočí. Nástrojem Rozdělit ho nařežete a nepotřebné části smažete.
+ Zbylý oblouk má volné konce, na které lze navázat. Celý kruh funguje jako uzavřený okruh.</li>
+<li><b>Výhybka L / P</b>: klik na volný konec, nebo do koleje (kolej se rozdělí). Zatržítko „proti směru“ (klávesa O) výhybku otočí.</li>
+<li><b>Výhybka do kruhu / oblouku</b>: kruh nerozřezávejte. Klikněte do něj pravým tlačítkem a vyberte
+ <b>„Výhybka v poloměru oblouku – přímá větev tečně ven“</b>. Je to běžná výhybka, jejíž odbočka má stejný poloměr jako kruh.
+ Odbočka tvoří kus kruhu (kruh zůstane spojitý) a přímá větev vyjede tečně ven, tam se napojí rovná trať.
+ Obdobně <b>Y v poloměru oblouku</b>: jedna větev pokračuje kruhem, druhá vyjede ven.
+ Stejně funguje tlačítko Výhybka L/P (strana shodná se stranou oblouku), tlačítko Y a odbočka tažením z kruhu.
+ Pro stavbu zvolte poloměr kruhu stejný jako poloměr výhybky, kterou koupíte.</li>
+<li><b>Pomocník – napojení výhybkou</b>: pravý klik na volný konec (např. rovné trati) → <b>„Pomocník: napojit výhybkou na kolej“</b>.
+ Najde na okolních kolejích nejlepší místo a typ výhybky (v kruhu přednostně výhybku v poloměru kruhu) a přípojnou kolej v limitech poloměru.
+ Po najetí na položku ukáže náhled, klik napojení vloží.</li>
+<li><b>Výhybka Y (klávesa Y)</b>: symetrická výhybka, obě větve se odklání stejně (každá polovinou úhlu 1:n, poloměr větví nastavíte v sekci Výhybky).
+ Pokládá se na volný konec, nebo do oblouku / kruhu (jedna větev pokračuje obloukem). Kterýkoli její konec lze pak přetáhnout na jiný volný konec.</li>
+<li><b>Rozdělit (D)</b>: rozdělí kolej v bodě.</li>
+<li><b>Výběr (V)</b>: klik na kolej ukáže vlastnosti. Lze upravit délku a poloměr (navazující kolej se posune), max. sklon prvku (0 = vodorovně, např. stanice) a výšky konců.</li>
+<li><b>Nepovolit menší než min. poloměr</b> (Limity, výchozí zapnuto): flexi kolej, kruh, napojení, výhybky ani ruční úprava nepoloží oblouk pod minimem.
+ Náhled je pak červený s textem „NELZE“ a klik se neprovede.</li>
+<li><b>Přesun hotových prvků</b> (nástroj Výběr):
+ <ul>
+ <li><b>tažení prvku</b> přesune jen ten prvek. Od sousedů se odpojí. Když jeho konec přiblížíte k volnému konci jiné koleje (zelené kroužky), přichytí se k němu polohou i směrem.</li>
+ <li><b>Shift + tažení</b> přesune celou připojenou skupinu bez rozpojení. Tažení vstupního bodu přesouvá vždy celou skupinu.</li>
+ <li><b>R / Shift+R</b> během tažení otočí o ±15°. <b>Šipky</b> posunou vybraný prvek o krok (0,25 m), <b>Shift+šipky</b> celou skupinu.</li>
+ <li>Přesný posun (Δx, Δy) a otočení (°) zadáte v panelu Vybraný prvek.</li>
+ </ul></li>
+<li><b>Podélný profil</b> dole ukazuje trasu přes vybraný prvek. Ve výhybce jde trasa větví zvolenou ve vlastnostech výhybky. Najetím myší se bod ukáže i v plánu.
+ Horní část je řez: hnědá = terén, černá = kolej (TK), čárkovaná = pláň. <b>Zářez</b> (modře) je zemina <i>nad</i> kolejí, kterou je třeba vykopat,
+ <b>násyp</b> (oranžově) je zemina <i>pod</i> kolejí. Pruh <b>„násyp ↑ / zářez ↓“</b> pod řezem ukazuje totéž jako diagram: násyp nahoru, zářez dolů (v metrech).
+ Nejspodnější pruh je sklon v %. Křížení X jsou vyznačena fialově.
+ <ul>
+ <li><b>Dvojklik do profilu</b> = nový <b>výškový bod</b> (fialový čtvereček). Kolej se v tom místě rozdělí (na krok 0,25 m) a otevře se zadání výšky TK.</li>
+ <li><b>Tažení výškového bodu</b> nahoru/dolů mění výšku po 1 cm. Niveleta mezi body se dopočítá v rámci limitů.</li>
+ <li><b>Dvojklik na výškový bod</b> = zadat přesné číslo. V relativním režimu se zadává relativně ke vstupnímu bodu.</li>
+ <li><b>Pravý klik na výškový bod</b> (nebo „zrušit bod“) = výška se zase počítá automaticky.</li>
+ <li>Výškové body jsou i v plánu (fialově) a v panelu Vybraný prvek (auto / pláň nad terénem / TK pevně).
+  Pokud dva body nejde spojit v limitu sklonu, Kontrola návrhu ohlásí chybu.</li>
+ <li><b>Tabulka Výškové body</b> v levém panelu obsahuje všechny body, i ty mimo zobrazenou trasu profilu (např. na odbočce).
+  U každého bodu lze změnit režim a hodnotu, ⌖ ho ukáže v plánu a v profilu, ✕ ho smaže.
+  Červeně jsou označené body, které neplatí: bod zadaný na jednom místě víckrát (u sousedních prvků platí poslední) nebo bod u smazaného prvku.
+  Tlačítko „Smazat duplicitní a neplatné“ je odstraní najednou.</li>
+ </ul></li>
+<li><b>Pravý klik</b> (bez tažení) otevře <b>nabídku</b>:
+ <ul>
+ <li>na <b>přímé koleji</b>: výhybka L / P s odbočkou ve směru nebo proti směru koleje (najetím na položku se výhybka ukáže v plánu), odbočka s flexi kolejí, rozdělit zde, výškový bod zde, vlastnosti, smazat;</li>
+ <li>na <b>volném konci</b>: výhybka L / P / Y na konec, pokračovat flexi kolejí;</li>
+ <li>na křížení X, výhybce nebo vstupním bodu: vlastnosti a smazání.</li>
+ </ul>
+ Při kreslení pravý klik kreslení ukončí. Tažení pravým tlačítkem posouvá mapu.</li>
+<li><b>Delete</b> smaže vybraný prvek, <b>Ctrl+Z / Ctrl+Y</b> zpět / znovu.</li>
+</ul>
+<p><b>Výpočet</b>: niveleta (výška TK) se hledá v krocích 0,25 m tak, aby pláň (TK − konstrukční výška) byla co nejblíž terénu a byly splněny limity:
+stoupání (v oblouku sníženo o c·G/R), sklon ve výhybce a poloměr výškového zakružení. Násyp / zářez = pláň − terén.
+Plocha násypu a zářezu v plánu = šířka pláně + svahy 1:m.</p>
+<p><b>Zemní práce – bilance</b>: kubatury se počítají z „terénu po stavbě“ na mřížce 0,25 m (pláň + svahy kolem všech kolejí),
+takže zahrnují i příčný sklon terénu a překryvy souběžných kolejí a výhybek. Hodnoty u jednotlivých prvků jsou jen podle osy koleje (lichoběžníkový řez).
+<ul>
+<li><b>Z 1 m³ výkopu hutněného násypu</b> (výchozí 0,85): kolik násypu udělám z 1 m³ vykopané zeminy.
+ Zohledňuje zhutnění a to, že drn a ornice se do násypu nehodí. Pro čistou hlínu bez ornice dejte ~1,0, při silné vrstvě ornice méně.</li>
+<li><b>Nakypření</b> (výchozí 1,25): o kolik naroste objem zeminy při odvozu nebo dovozu (kontejner, nákladní auto).</li>
+<li>Návrh je <b>vyrovnaný (neutrální)</b>, když výkop × součinitel ≈ násyp (do 10 %).</li>
+<li><b>Vyrovnat bilanci</b> posune celou niveletu nahoru nebo dolů tak, aby výkop pokryl násypy. Výpočet hlídá limity sklonu.
+ Posun se týká i bodů „pláň nad terénem“ (např. vstupního bodu). Body „TK pevně“ zůstanou na místě.
+ Posun je uložený s návrhem; vrátíte ho tlačítkem „Zrušit posun“ nebo Ctrl+Z.</li>
+</ul>
+<p><b>Kontrolní body – zpřesnění terénu laserem</b>. DMR 5G má bod terénu zhruba po 2–3 m a sken bývá i 10 a více let starý
+(DMR 5G se skenoval v letech 2009–2013).
+Výšky změřené v zahradě rotačním laserem ho zpřesní.</p>
+<ul>
+<li><b>1. Rozmístit body.</b> V tabulce bodů tlačítko <b>„podél trasy po 2 m → Přidat body“</b> (body T0, T2 … leží na ose trasy z podélného profilu),
+ nebo nástroj <b>Kontrolní bod</b> (M): klik do plánu tam, kde bude stát lať. Body si můžete vyexportovat do CSV a vytisknout jako zápisník.</li>
+<li><b>2. Měřit.</b> V zahradě body vytyčte, např. kolíky po trase pásmem od vstupního bodu.
+ Laser postavte tak, aby byl vidět na všechny body. Na každém bodě odečtěte na lati výšku paprsku v metrech.</li>
+<li><b>3. Zapsat.</b> Odečty zapište do tabulky. <b>Enter</b> skočí na stejný sloupec dalšího řádku. Bod, který stál jinde, přetáhněte v plánu myší.</li>
+<li><b>Typ</b>:
+ <b>laser</b> = odečet na lati, větší číslo znamená níž;
+ <b>výška</b> = výška terénu v m n.m., např. od geodeta nebo z RTK GNSS;
+ <b>rel.</b> = relativní výška, plus znamená nahoru.
+ Když laser přestavíte, dejte dalším bodům nové <b>číslo stanoviska</b>.</li>
+<li><b>Výška přístroje</b>:
+ <ul>
+ <li>Když má stanovisko bod se <b>známou výškou</b> (např. práh nebo značka od geodeta), výška přístroje se vezme z něj.</li>
+ <li>Jinak se dopočítá tak, aby body v mediánu seděly na DMR. Tvar terénu se zpřesní, celková výška zůstane podle DMR. Pro násypy a zářezy to nevadí.</li>
+ <li>Pozor: změřte i několik bodů mimo místa, kde se terén od skenování DMR změnil, jinak se změna „schová“ do výšky přístroje.</li>
+ </ul></li>
+<li><b>Výpočet</b>: rozdíly měření − DMR se proloží plochou (kriging), která body prochází s přesností „přesnost bodu“.
+ Do vzdálenosti asi 2× „dosah vlivu“ od bodů se plocha vrací k DMR.
+ Do přesnosti bodu patří i chyba umístění: 0,3 m vedle na svahu 15 % znamená 4,5 cm.</li>
+<li><b>Výsledek</b>: zpřesněný terén se použije všude – vrstevnice, profil (tečkovaně původní DMR, ◆ kontrolní body), násypy a zářezy, kubatury, cena i 3D.
+ Panel ukáže výkop a násyp „jen DMR“ a „s měřením“. Číslo <b>přesnost terénu mezi body</b> pochází z křížové kontroly:
+ když je výrazně horší než přesnost bodu, je bodů málo a je potřeba přidat další.</li>
+<li>Body se ukládají v prohlížeči zvlášť od návrhu („Smazat celý návrh“ je nesmaže) a jsou součástí uloženého JSON návrhu.
+ Import CSV: oddělovač ; nebo , a sloupce
+ <ul>
+ <li><i>nazev</i>;</li>
+ <li>souřadnice: <i>x, y</i> (lokální m), nebo <i>x_EPSG5514, y_EPSG5514</i>, nebo Y, X v S-JTSK;</li>
+ <li><i>odecet</i> / <i>vyska</i> / <i>h</i>;</li>
+ <li><i>typ</i>, <i>stanovisko</i>, <i>znama_vyska</i>.</li>
+ </ul></li>
+<li>GPS v mobilu na umístění bodů nestačí: má chybu 3–5 m, na svahu to dělá desítky cm výšky. Body umisťujte podle ortofota nebo pásmem.</li>
+</ul>
+<p><b>Předpoklad ceny</b>: počty se berou z návrhu, ceny za jednotku zadáváte vy (Kč vč. DPH). Ceny kolejiva se pamatují zvlášť pro každý rozchod.
+<ul>
+<li>Kolej <b>z dílů</b>: kolejnice = 2 × délka kolejí, pražce = délka / rozteč, upevnění 4 ks na pražec. Kolej <b>hotová</b>: cena za metr pole s pražci.</li>
+<li>Délka kolejí v rozpočtu je bez výhybek (výhybka se kupuje celá). Spojky = styky podle délky kolejnice + 6 na výhybku a 8 na křížení.</li>
+<li>Štěrk = šířka pláně × tloušťka lože × délka (u výhybek obě větve), přepočteno objemovou hmotností na tuny.</li>
+<li>Zemní práce se berou z bilance: výkop, násyp, odvoz přebytku nebo dovoz chybějící zeminy.</li>
+<li><b>Výchozí ceny jsou jen hrubý odhad</b>, nejde o průzkum trhu. Přepište je podle nabídek dodavatelů. Rozpočet lze uložit jako CSV (Soubory a export).</li>
+</ul>
+<p><b>Výchozí limity</b> (souhrn běžných doporučení z praxe klubů a výrobců, nejde o normu):</p>
+<table>
+<tr><th></th><th>3½"</th><th>5"</th><th>7¼" / 7½"</th></tr>
+<tr><td>Min. poloměr (malé lokomotivy)</td><td>4,5 m</td><td>6 m</td><td>9 m (≈30 ft)</td></tr>
+<tr><td>Doporučený poloměr</td><td>≥ 7,5 m</td><td>≥ 10 m</td><td>≥ 15 m (≈50 ft)</td></tr>
+<tr><td>Stoupání doporučené / max.</td><td>1 % / 2 %</td><td>1 % / 2 %</td><td>1 % / 2 %</td></tr>
+<tr><td>Sklon ve výhybce</td><td>≤ 1 %</td><td>≤ 1 %</td><td>≤ 1 %</td></tr>
+<tr><td>Výškové zakružení</td><td>≥ 15 m</td><td>≥ 20 m</td><td>≥ 30 m</td></tr>
+<tr><td>Přímá mezi protisměrnými oblouky</td><td>≥ 0,75 m</td><td>≥ 1 m</td><td>≥ 1,5 m</td></tr>
+<tr><td>Max. převýšení koleje</td><td>5 mm</td><td>8 mm</td><td>12 mm</td></tr>
+<tr><td>Výhybka (R / úhel / délka)</td><td>4,5 m / 1:5 / 1,3 m</td><td>6 m / 1:5 / 1,8 m</td><td>10 m / 1:6 / 2,8 m</td></tr>
+<tr><td>Konstrukční výška / šířka pláně</td><td>0,07 / 0,35 m</td><td>0,10 / 0,45 m</td><td>0,15 / 0,65 m</td></tr>
+</table>
+<ul>
+<li>Rozhoduje <b>minimální poloměr udávaný výrobcem lokomotivy</b> a délka vozů. Větší lokomotivy 7¼" chtějí 20 m a víc.</li>
+<li>Parní lokomotiva s cestujícími těžko zvládá víc než 1 % (1:100). Akumulátorové lokomotivy vyjedou i 2 % a víc, ale brzdění s cestujícími je pak kritické.</li>
+<li><b>3½"</b> se většinou staví jako <b>vyvýšená trať</b> na podpěrách, často společně s 5" (dvourozchodná).
+ U vyvýšené trati nastavte „Cílová výška pláně nad terénem“ na výšku tratě (např. 0,6 m). Údaj „násyp“ pak znamená výšku podpěr a „zářez“ místa, kde je terén výš než trať.
+ Kubatury v tom případě nemají smysl.</li>
+<li>Převýšení koleje: c = G·v²/(g·R), omezené maximem. Jezdci sedí vysoko a vůz stojící v oblouku nesmí klopit dovnitř. Vzestupnici (náběh převýšení) dělejte zhruba ve sklonu 1:200.</li>
+<li>Kompenzace stoupání v oblouku (c·G/R) je empirický odhad odporu oblouku. Při c = 0 se nepoužije.</li>
+<li>7½" (USA) má prakticky stejné limity jako 7¼".</li>
+<li>Terén: DMR 5G má přesnost ±0,18 m v odkrytém terénu a hustotu asi 1 bod na 6 m². Mřížka 0,25 m je interpolace.
+ Pod domem a pod hustou zelení je terén dopočítaný. Před stavbou výšky ověřte nivelací.</li>
+</ul>
